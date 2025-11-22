@@ -3,42 +3,56 @@ package com.example.lesson7.presenter
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import coil3.load
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lesson7.R
 import com.example.lesson7.appComponent
+import com.example.lesson7.data.model.TaskEntity
+import com.example.lesson7.data.model.TaskState
 import com.example.lesson7.databinding.FragmentMainBinding
-import com.example.lesson7.di.DaggerAppComponent
-import com.example.lesson7.di.viewModel.ViewModeFactory
+import com.example.lesson7.di.viewModel.ViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.androidbroadcast.vbpd.viewBinding
 import javax.inject.Inject
 
 class MainFragment: Fragment(R.layout.fragment_main) {
     private val binding: FragmentMainBinding by viewBinding(FragmentMainBinding::bind)
 
+    private val adapter = TasksAdapter(
+        ::onTaskStateChangeClick
+    )
     @Inject
-    lateinit var viewModelFactory: ViewModeFactory
+    lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel: MainViewModel by viewModels{viewModelFactory}
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.dog.setOnClickListener {
-            viewModel.loadNewDog()
+        with(binding.tasksRecycler){
+            adapter=this@MainFragment.adapter
+            layoutManager = LinearLayoutManager(requireContext())
         }
 
-        viewModel.dogImageUrl.observe(viewLifecycleOwner) {
-            binding.dogImage.load(it)
-
-            Toast.makeText(
-                requireContext(),
-                it,
-                Toast.LENGTH_LONG
-            ).show()
+        viewModel.tasks.observe(viewLifecycleOwner){
+            adapter.submitList(it)
         }
+    }
 
-        super.onViewCreated(view, savedInstanceState)
+    private fun onTaskStateChangeClick(task: TaskEntity){
+
+        val states = TaskState.entries.map {it.name}.toTypedArray()
+        var index = states.indexOf(task.state.name)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Выберете состояние")
+            .setNeutralButton("Отмена") {_, _ ->}
+            .setPositiveButton("Окей") {dialog, newState ->
+                val taskState = TaskState.entries.get(index)
+                viewModel.changeTaskState(task, taskState)
+            }
+            .setSingleChoiceItems(states, index) { dialog, newState ->
+                index = newState
+            }.show()
     }
 
     override fun onAttach(context: Context) {

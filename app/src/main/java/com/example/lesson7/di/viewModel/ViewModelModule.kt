@@ -12,7 +12,7 @@ interface ViewModelModule {
 
     @Binds
     fun bindViewModelFactory(
-        factory: ViewModeFactory
+        factory: ViewModelFactory
     ): ViewModelProvider.Factory
 
     @Binds

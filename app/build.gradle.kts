@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-kapt")
-
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -69,4 +69,8 @@ dependencies {
 
     implementation("com.google.dagger:dagger:2.56.2")
     kapt("com.google.dagger:dagger-compiler:2.56.2")
+
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4")
+    ksp("androidx.room:room-runtime:2.8.4")
 }
