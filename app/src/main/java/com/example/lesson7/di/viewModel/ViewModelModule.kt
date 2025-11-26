@@ -3,6 +3,7 @@ package com.example.lesson7.di.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.lesson7.presenter.MainViewModel
+import com.example.lesson7.presenter.create.CreateViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,5 +22,10 @@ interface ViewModelModule {
     fun bindMainViewModel(
         viewModel: MainViewModel
     ):ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateViewModel::class)
+    fun bindCreate(viewModel: CreateViewModel): ViewModel
 
 }

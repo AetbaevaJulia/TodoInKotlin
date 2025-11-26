@@ -12,26 +12,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-//    private val getTaskUseCase: GetTaskUseCase,
-//    private val updateTaskStateUseCase: UpdateTaskStateUseCase
+    private val getTaskUseCase: GetTaskUseCase,
+    private val updateTaskStateUseCase: UpdateTaskStateUseCase
 
 ): ViewModel() {
     private val _tasks = MutableLiveData<List<TaskEntity>>()
     val tasks: LiveData<List<TaskEntity>>
         get() = _tasks
 
-//    init{
-//        viewModelScope.launch {
-//            val tasks = getTaskUseCase()
-//            _tasks.postValue(tasks)
-//        }}
+    init{
+        viewModelScope.launch {
+            getTaskUseCase().collect {
+                _tasks.postValue(it)
+            }
+        }}
 
     fun changeTaskState(task : TaskEntity, state: TaskState){
         viewModelScope.launch {
-//            updateTaskStateUseCase(
-//                task = task,
-//                taskState = state
-//            )
+            updateTaskStateUseCase(
+                task = task,
+                taskState = state
+            )
         }
     }
 }

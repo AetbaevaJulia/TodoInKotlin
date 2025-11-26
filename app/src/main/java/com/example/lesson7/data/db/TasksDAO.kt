@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.lesson7.data.model.TaskEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TasksDAO {
@@ -12,5 +13,5 @@ interface TasksDAO {
     suspend fun upsertTask(taskEntity: TaskEntity)
 
     @Query("SELECT * FROM ${TaskEntity.TABLE} ORDER BY endTime ASC")
-    suspend fun getAllTasks() : List<TaskEntity>
+    fun getAllTasks() : Flow<List<TaskEntity>>
 }

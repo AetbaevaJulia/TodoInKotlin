@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lesson7.R
 import com.example.lesson7.appComponent
@@ -35,6 +36,11 @@ class MainFragment: Fragment(R.layout.fragment_main) {
 
         viewModel.tasks.observe(viewLifecycleOwner){
             adapter.submitList(it)
+        }
+
+        binding.buttonCreateTask.setOnClickListener {
+            val direction = MainFragmentDirections.actionMainFragmentToCreateTaskFragment()
+            findNavController().navigate(direction)
         }
     }
 
